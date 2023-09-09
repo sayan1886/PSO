@@ -16,7 +16,7 @@
     "num_of_chromosomes": 8,
     "__num_of_gene__": "num_of_gene denotes number of variable in the objective function",
     "num_of_gene" : 1,
-    "num_of_iterations": 20,
-    "num_of_particles": 50,
+    "num_of_iterations": 50,
+    "num_of_particles": 100,
     "plot_type": "pareto-front"
 }

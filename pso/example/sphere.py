@@ -21,7 +21,7 @@ if __name__ == "__main__":
     configs = config.get_config(example_name)
     print(configs)
     
-    problem = Problem(objective=f1, 
+    problem = Problem(objective=f1, objective_type=configs.objective.objective_type,
                       num_of_variables=configs.num_of_gene, 
                       variables_range=[(configs.range.min, configs.range.max)],
                       expand=configs.objective.expand, 

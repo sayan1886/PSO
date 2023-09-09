@@ -22,7 +22,7 @@ setup(
         '': ['*.json'],
     },
     # include_package_data=True,
-    keywords='pso ga single-objective',
+    keywords='binary-pso ga single-objective',
     license='MIT',
     install_requires=['numpy', 'tqdm', 'matplotlib'],
 )

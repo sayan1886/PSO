@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from os.path import dirname, realpath
+from os.path import dirname, realpath, join
+from pathlib import Path
 from typing import Any
 import json
         
@@ -79,7 +80,7 @@ class Config:
     
     
 def __get_config_file_name(exampleName):
-    root_dir = dirname(realpath(__file__))
+    root_dir = join(Path(__file__).parent.absolute())
     file_name = root_dir + "/" + exampleName + ".json"
     return file_name    
 

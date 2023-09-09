@@ -1,8 +1,8 @@
 import random
-
+import numpy as np
 class Particle(object):
 
-    def __init__(self, variables_range, n_chromosome=8, n_gene=1, chromosome = None,
+    def __init__(self, variables_range, n_chromosome=8, n_gene=1,
                  inertia_weight_constant = 0.5, cognitive_coefficient= 0.1,
                  social_coefficient= 0.1):
         self.variables_range = variables_range
@@ -12,12 +12,10 @@ class Particle(object):
         self.cognitive_coefficient = cognitive_coefficient
         self.social_coefficient = social_coefficient
         self.pBest = None
-        self.velocity = None
+        self.pBest_chromosome = None
         self.position = None
         self.objective = None
-        if chromosome is None:
-            chromosome = self.__generate_random_chromosome()
-        self.chromosome = chromosome.copy()
+        self.chromosome, self.velocity = self.__generate_random_chromosome()
         
 
     def __eq__(self, other):
@@ -28,16 +26,19 @@ class Particle(object):
      # genarate a randome chromosome with number of gene
     def __generate_random_chromosome(self):
         chromosome = [0] * self.n_gene
+        velocity = [0] * self.n_gene
         for i in range(self.n_gene):
-            chromosome[i] = self.__generate_random_gene().copy()
-        return chromosome
+            chromosome[i], velocity[i] = self.__generate_random_gene()
+        return chromosome, velocity
     
     # genarate a randome gene main unit of chromosome
     def __generate_random_gene(self):
         gene = [0] * self.n_chromosome
+        velocity_gene = [0] * self.n_chromosome
         for i in range(self.n_chromosome):
             gene[i] = random.randint(0,1)
-        return gene
+            velocity_gene[i] = random.uniform(0, 1)
+        return gene.copy(), velocity_gene.copy()
     
     # encode chromosome will return array of integer 
     # where each integer denote a enocded gene
@@ -91,3 +92,32 @@ class Particle(object):
     
     def features(self):
         return self.__corresponding_value()
+    
+    def update_position(self, gBest_chromosome):
+        for i in range(self.n_gene):
+            for j in range(self.n_chromosome):
+                self.chromosome[i][j], self.velocity[i][j] = \
+                        self.update_bit_position(self_bit=self.chromosome[i][j], 
+                                         velocity_bit=self.velocity[i][j],
+                                         pBest_bit=self.pBest_chromosome[i][j],
+                                         gBest_bit=gBest_chromosome[i][j])
+    
+    # f(v_id(t)) = 1 / (1 + e ** -v_id(t))
+    # v_id(t) = v_id(t -1) + U_1 * (p_id - x_id(t - 1)) + U_2 * (p_gd - x_id(t - 1))
+    # where U_1 and U_2 random number between 0 and 1
+    # id is the best solution found for the individual
+    # gd is the best solution found for the swarm
+    # we might consider a range of v_min and v_max so that f(v_id(t)) does not 
+    # approach too closely to 0 or 1
+    # we might need correct v_id value to the range
+    # now we will chose a random number between 0 & 1 and compare with f(v_id(t))
+    def update_bit_position(self, self_bit, velocity_bit, pBest_bit, gBest_bit):
+        u1 = random.uniform(0, 1)
+        u2 = random.uniform(0, 1)
+        bit_velocity_f = velocity_bit  + u1 * (pBest_bit - self_bit) \
+            + u2 * (gBest_bit - self_bit)
+        sigmoid_v_bit = (1 / 1 + np.exp(-bit_velocity_f))
+        bit_velocity = 0
+        if sigmoid_v_bit > random.uniform(0, 1):
+            bit_velocity = 1
+        return bit_velocity, sigmoid_v_bit

@@ -15,3 +15,6 @@ class Particles:
 
     def append(self, new_individual):
         self.particles.append(new_individual)
+        
+    def get(self, index):
+        return self.particles[index]
