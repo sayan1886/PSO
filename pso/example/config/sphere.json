@@ -1,0 +1,22 @@
+{
+    "objective": {
+        "num_of_objective" : 1,
+        "objective_type": "min",
+        "__expand__": "If true, input of functions are treated as list of respective variables (e.x. `f(x,y,z)`), otherwise they are treated as a vector (e.x. `f([x1, x2, x3])`)",
+        "expand" : false
+    },
+    "range": {
+        "min": -5.12,
+        "max": 5.12
+    },
+    "inertia_weight_constant": 0.8,
+    "cognitive_coefficient": 0.2,
+    "social_coefficient": 0.1,
+    "__num_of_chromosomes__": "num_of_chromosomes denotes number of random binary string length, which will decoded to the actual value",
+    "num_of_chromosomes": 8,
+    "__num_of_gene__": "num_of_gene denotes number of variable in the objective function",
+    "num_of_gene" : 1,
+    "num_of_iterations": 20,
+    "num_of_particles": 50,
+    "plot_type": "pareto-front"
+}
