@@ -13,9 +13,7 @@ class PSOUtils:
         for _ in range(self.num_of_particles):
             particle = self.problem.generate_particle()
             self.problem.calculate_objective(particle=particle)
-            # self.problem.evaluate_pBest(particle=particle)
             particles.append(particle)
-        # self.problem.evaluate_gBest(particles=particles)
         return particles
     
     def update_position(self, particles:Particles, gBest):

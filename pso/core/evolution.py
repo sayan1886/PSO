@@ -4,6 +4,8 @@ from pso.core.utils import PSOUtils
 from pso.core.particles import Particles
 from pso.core.particle import Particle
 
+# https://slideplayer.com/slide/5167619/
+# https://ieeexplore.ieee.org/document/4433821
 class Evolution:
 
     def __init__(self, problem, num_of_iterations=50, num_of_particles=20):
@@ -12,15 +14,21 @@ class Evolution:
         self.particles: Particles = None
         self.num_of_iterations = num_of_iterations
         self.num_of_particles = num_of_particles
+        self.gBests = []
 
     def evolve(self):
         self.particles = self.utils.create_initial_particles()
-        for i in tqdm(range(self.num_of_iterations)):
+        for _ in tqdm(range(self.num_of_iterations)):
+            # print('''\n\n**iteration: {0}**
+# particles:    {1}'''.format(i, self.particles))
             for j in range(self.num_of_particles):
                 particle:Particle = self.particles.get(index=j)
+                self.utils.problem.calculate_objective(particle=particle)
                 self.utils.problem.evaluate_pBest(particle=particle)
             self.utils.problem.evaluate_gBest(self.particles)
+            self.gBests.append(self.particles.gBest)
             self.utils.update_position(particles=self.particles, 
-                                       gBest=self.utils.problem.gBest_chromosome)
+                                       gBest=self.particles.gBest_chromosome)
         
-        print(self.utils.problem.gBest)
+        print(self.particles.gBest)
+        return self.gBests

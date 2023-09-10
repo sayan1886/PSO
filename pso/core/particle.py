@@ -1,5 +1,5 @@
 import random
-import numpy as np
+import math
 class Particle(object):
 
     def __init__(self, variables_range, n_chromosome=8, n_gene=1,
@@ -22,6 +22,33 @@ class Particle(object):
         if isinstance(self, other.__class__):
             return self.features() == other.features()
         return False
+    
+    def __str__(self):
+        chromosome = []
+        for i in range(self.n_gene):
+            gene = ''.join(str(x) for x in self.chromosome[i])
+            chromosome.append(gene)
+        chromosome_str = ''.join(str(x) for x in chromosome)
+        
+        velocity = []
+        for i in range(self.n_gene):
+            gene = ','.join(str(x) for x in self.velocity[i])
+            velocity.append(gene)
+        velocity_str = ','.join(str(x) for x in velocity)
+        
+        pBest = []
+        if self.pBest_chromosome is not None:
+            for i in range(self.n_gene):
+                gene = ''.join(str(x) for x in self.pBest_chromosome[i])
+                pBest.append(gene)
+        pBest_str = ''.join(str(x) for x in pBest)
+        
+        return '''
+chromosome:             {0} 
+Velocity:               {1}
+pBest_chromosome:       {2}
+pBest:                  {3}'''.format(
+            chromosome_str, velocity_str, pBest_str, self.pBest) 
     
      # genarate a randome chromosome with number of gene
     def __generate_random_chromosome(self):
@@ -98,7 +125,7 @@ class Particle(object):
             for j in range(self.n_chromosome):
                 self.chromosome[i][j], self.velocity[i][j] = \
                         self.update_bit_position(self_bit=self.chromosome[i][j], 
-                                         velocity_bit=self.velocity[i][j],
+                                         bit_velocity=self.velocity[i][j],
                                          pBest_bit=self.pBest_chromosome[i][j],
                                          gBest_bit=gBest_chromosome[i][j])
     
@@ -111,13 +138,14 @@ class Particle(object):
     # approach too closely to 0 or 1
     # we might need correct v_id value to the range
     # now we will chose a random number between 0 & 1 and compare with f(v_id(t))
-    def update_bit_position(self, self_bit, velocity_bit, pBest_bit, gBest_bit):
+    def update_bit_position(self, self_bit, bit_velocity, pBest_bit, gBest_bit):
         u1 = random.uniform(0, 1)
         u2 = random.uniform(0, 1)
-        bit_velocity_f = velocity_bit  + u1 * (pBest_bit - self_bit) \
+        bit_velocity_f = bit_velocity  + u1 * (pBest_bit - self_bit) \
             + u2 * (gBest_bit - self_bit)
-        sigmoid_v_bit = (1 / 1 + np.exp(-bit_velocity_f))
+        sigmoid_v_bit = (1 / (1 + math.exp(-bit_velocity_f)))
         bit_velocity = 0
-        if sigmoid_v_bit > random.uniform(0, 1):
+        r = random.uniform(0, 1)
+        if r < sigmoid_v_bit:
             bit_velocity = 1
         return bit_velocity, sigmoid_v_bit

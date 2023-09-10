@@ -7,13 +7,20 @@ import numpy as np
 from pso.example.config import config
 from pso.core.evolution import Evolution
 from pso.core.problem import Problem
+from pso.plot.plot import PSOContourPlot as Plot
 
 # benchmark problem on spehre
 # Sphere => f(x) = sumation ( {i=1  to p} x_i^2 )
 # x_i in [-5.12, 5.12]				
 # x^* = (0,0,...,0); f(x^*) = 0
 def f1(x):
-    return np.sum(x ** 2)
+    sum = 0
+    for i in range(len(x)):
+        sum += x[i] ** 2
+    return sum
+    
+def f2(x, y):
+    return (x-3.14)**2 + (y-2.72)**2 + np.sin(3*x+1.41) + np.sin(4*y-1.73)
 
 if __name__ == "__main__":
     executing_file_path = sys.argv[0]
@@ -35,13 +42,8 @@ if __name__ == "__main__":
                     num_of_iterations=configs.num_of_iterations, 
                     num_of_particles=configs.num_of_particles)
     
-    evol = evo.evolve()
-    # func = [i.objectives for i in evol]
-
-    # function1 = [i[0] for i in func]
-    # function2 = [i[1] for i in func]
-    # plt.title("MOO Benchmark Problem SCH")
-    # plt.xlabel('Function 1', fontsize=15)
-    # plt.ylabel('Function 2', fontsize=15)
-    # plt.scatter(function1, function2)
-    # plt.show()
+    
+    gBests = evo.evolve()
+    
+    plot = Plot(objective=f1)
+    plot.plot(gBests)
