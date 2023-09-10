@@ -45,10 +45,11 @@ if __name__ == "__main__":
     
     gBest, gBest_pos, pBest, pBest_pos = evo.evolve()
     
-    plot = Plot(objective=f1, expandable=configs.objective.expand,
+    plot = Plot(objective=f1, num_of_iterations=configs.num_of_iterations,
+                expandable=configs.objective.expand,
                 num_of_variable=configs.num_of_gene,
                 range_min=configs.range.min, 
                 range_max=configs.range.max)
     # plot.plot_scatter()
-    plot.plot_contour(gBest=gBest, gBest_pos=gBest_pos,
-                      pBest=pBest, pBest_pos=pBest_pos)
+    # plot.plot_contour(gBest=gBest, gBest_pos=gBest_pos,
+    #                   pBest=pBest, pBest_pos=pBest_pos)
