@@ -4,6 +4,7 @@ class Particles:
         self.particles = []
         self.gBest_chromosome = None
         self.gBest = None
+        self.gBest_position = None
 
     def __len__(self):
         return len(self.particles)

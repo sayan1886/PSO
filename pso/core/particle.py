@@ -13,14 +13,13 @@ class Particle(object):
         self.social_coefficient = social_coefficient
         self.pBest = None
         self.pBest_chromosome = None
-        self.position = None
         self.objective = None
         self.chromosome, self.velocity = self.__generate_random_chromosome()
         
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
-            return self.features() == other.features()
+            return self.position() == other.position()
         return False
     
     def __str__(self):
@@ -117,7 +116,7 @@ pBest:                  {3}'''.format(
             y = self.variables_range[gene_index] 
         return y
     
-    def features(self):
+    def position(self):
         return self.__corresponding_value()
     
     def update_position(self, gBest_chromosome):

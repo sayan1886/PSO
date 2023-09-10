@@ -43,7 +43,12 @@ if __name__ == "__main__":
                     num_of_particles=configs.num_of_particles)
     
     
-    gBests = evo.evolve()
+    gBest, gBest_pos, pBest, pBest_pos = evo.evolve()
     
-    plot = Plot(objective=f1)
-    plot.plot(gBests)
+    plot = Plot(objective=f1, expandable=configs.objective.expand,
+                num_of_variable=configs.num_of_gene,
+                range_min=configs.range.min, 
+                range_max=configs.range.max)
+    # plot.plot_scatter()
+    plot.plot_contour(gBest=gBest, gBest_pos=gBest_pos,
+                      pBest=pBest, pBest_pos=pBest_pos)

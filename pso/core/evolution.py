@@ -15,6 +15,7 @@ class Evolution:
         self.num_of_iterations = num_of_iterations
         self.num_of_particles = num_of_particles
         self.gBests = []
+        self.gBests_position = []
 
     def evolve(self):
         self.particles = self.utils.create_initial_particles()
@@ -27,8 +28,15 @@ class Evolution:
                 self.utils.problem.evaluate_pBest(particle=particle)
             self.utils.problem.evaluate_gBest(self.particles)
             self.gBests.append(self.particles.gBest)
+            self.gBests_position.append(self.particles.gBest_position)
             self.utils.update_position(particles=self.particles, 
                                        gBest=self.particles.gBest_chromosome)
         
         print(self.particles.gBest)
-        return self.gBests
+        pBest = []
+        pBest_position = []
+        for i in range(self.num_of_particles):
+            particle:Particle = self.particles.get(index=i)
+            pBest.append(particle.pBest)
+            pBest_position.append(particle.position())
+        return self.gBests, self.gBests_position, pBest, pBest_position

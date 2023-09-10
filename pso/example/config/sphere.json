@@ -15,8 +15,8 @@
     "__num_of_chromosomes__": "num_of_chromosomes denotes number of random binary string length, which will decoded to the actual value",
     "num_of_chromosomes": 8,
     "__num_of_gene__": "num_of_gene denotes number of variable in the objective function",
-    "num_of_gene" : 10,
-    "num_of_iterations": 2000,
-    "num_of_particles": 100,
+    "num_of_gene" : 2,
+    "num_of_iterations": 20,
+    "num_of_particles": 50,
     "plot_type": "pareto-front"
 }

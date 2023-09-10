@@ -36,9 +36,9 @@ class Problem:
 
     def calculate_objective(self, particle:Particle):
         if self.expand:
-            particle.objective = self.objective(*particle.features())
+            particle.objective = self.objective(*particle.position())
         else:
-            particle.objective = self.objective(particle.features())
+            particle.objective = self.objective(particle.position())
             
     def evaluate_pBest(self, particle:Particle):
         if self.objective_type == "min":
@@ -61,6 +61,7 @@ class Problem:
             if (particles.gBest is None or 
                 pBest_min <= particles.gBest):
                 particles.gBest = pBest_min
+                particles.gBest_position = pBest_min_particle.position()
                 particles.gBest_chromosome = pBest_min_particle.chromosome
         else:
             soted_particles = sorted(particles, key=lambda x: x.pBest, reverse=True)
@@ -69,6 +70,7 @@ class Problem:
             if (particles.gBest is None or 
                 pBest_max >= particles.gBest):
                 particles.gBest = pBest_max
+                particles.gBest_position = pBest_max_particle.position()
                 particles.gBest_chromosome = pBest_max_particle.chromosome
         
     
