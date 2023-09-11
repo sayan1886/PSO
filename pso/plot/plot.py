@@ -192,7 +192,7 @@ class PSOContourPlot():
                 pBest, pbest_plot, p_plot, p_arrow,
                 gBest, gbest_plot):
         ani = self.animate
-        anim = FuncAnimation(fig, ani, frames=list(range(1,self.num_of_iterations)), 
+        _ = FuncAnimation(fig, ani, frames=list(range(1,self.num_of_iterations)), 
                              interval=500, blit=False, repeat=True,
                              fargs=(ax, v_x, v_y, pBest, pbest_plot, 
                                     p_plot, p_arrow, gBest, gbest_plot))

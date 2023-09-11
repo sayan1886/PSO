@@ -16,7 +16,7 @@ class PSOUtils:
             particles.append(particle)
         return particles
     
-    def update_position(self, particles:Particles, gBest):
+    def update_position_velocity(self, particles:Particles, gBest):
         for i in range(len(particles)):
             particle:Particle = particles.get(index=i)
-            particle.update_position(gBest)
+            particle.update_position_velocity(gBest)

@@ -1,19 +1,16 @@
-import random
-import math
+import numpy as np
+
 class Particle(object):
 
-    def __init__(self, variables_range, n_chromosome=8, n_gene=1,
-                 inertia_weight_constant = 0.5, cognitive_coefficient= 0.1,
-                 social_coefficient= 0.1):
+    def __init__(self, variables_range, n_chromosome=8, n_gene=1):
         self.variables_range = variables_range
         self.n_chromosome = n_chromosome
         self.n_gene = n_gene
-        self.inertia_weight_constant = inertia_weight_constant
-        self.cognitive_coefficient = cognitive_coefficient
-        self.social_coefficient = social_coefficient
         self.pBest = None
         self.pBest_chromosome = None
         self.objective = None
+        self.velocity_min = 0.1
+        self.velocity_max = 0.9
         self.chromosome, self.velocity = self.__generate_random_chromosome()
         
 
@@ -62,8 +59,11 @@ pBest:                  {3}'''.format(
         gene = [0] * self.n_chromosome
         velocity_gene = [0] * self.n_chromosome
         for i in range(self.n_chromosome):
-            gene[i] = random.randint(0,1)
-            velocity_gene[i] = random.uniform(0, 1)
+            gene[i] = np.random.randint(0,1)
+            # v_id = v_min + (v_max - v_min) * rand()
+            velocity_gene[i] = self.velocity_min + \
+                (self.velocity_max - self.velocity_min) * \
+                    np.random.uniform(0, 1)
         return gene.copy(), velocity_gene.copy()
     
     # encode chromosome will return array of integer 
@@ -119,32 +119,45 @@ pBest:                  {3}'''.format(
     def position(self):
         return self.__corresponding_value()
     
-    def update_position(self, gBest_chromosome):
+    def update_position_velocity(self, gBest_chromosome):
         for i in range(self.n_gene):
             for j in range(self.n_chromosome):
                 self.chromosome[i][j], self.velocity[i][j] = \
-                        self.update_bit_position(self_bit=self.chromosome[i][j], 
-                                         bit_velocity=self.velocity[i][j],
-                                         pBest_bit=self.pBest_chromosome[i][j],
-                                         gBest_bit=gBest_chromosome[i][j])
+                        self.update_bit_position_velocity(
+                            bit_pos=self.chromosome[i][j], 
+                            bit_velocity=self.velocity[i][j],
+                            pBest_bit=self.pBest_chromosome[i][j],
+                            gBest_bit=gBest_chromosome[i][j])
     
     # f(v_id(t)) = 1 / (1 + e ** -v_id(t))
     # v_id(t) = v_id(t -1) + U_1 * (p_id - x_id(t - 1)) + U_2 * (p_gd - x_id(t - 1))
-    # where U_1 and U_2 random number between 0 and 1
+    # where U_1 and U_2 random number between 0 and 3 and some U_1 + U_2 < 4.0
     # id is the best solution found for the individual
     # gd is the best solution found for the swarm
     # we might consider a range of v_min and v_max so that f(v_id(t)) does not 
     # approach too closely to 0 or 1
     # we might need correct v_id value to the range
     # now we will chose a random number between 0 & 1 and compare with f(v_id(t))
-    def update_bit_position(self, self_bit, bit_velocity, pBest_bit, gBest_bit):
-        u1 = random.uniform(0, 1)
-        u2 = random.uniform(0, 1)
-        bit_velocity_f = bit_velocity  + u1 * (pBest_bit - self_bit) \
-            + u2 * (gBest_bit - self_bit)
-        sigmoid_v_bit = (1 / (1 + math.exp(-bit_velocity_f)))
-        bit_velocity = 0
-        r = random.uniform(0, 1)
+    # x_ij(t + 1) = 1 if r_ij < sig(v_ij (t + 1))  otherwise 0
+    def update_bit_position_velocity(self, bit_pos, bit_velocity, 
+                                     pBest_bit, gBest_bit):
+        u1 = np.random.uniform(0, 3)
+        u2 = np.random.uniform(0, 3)
+        while u1 + u2 >= 4.0:
+            u1 = np.random.uniform(0, 3)
+            u2 = np.random.uniform(0, 3)
+            
+        bit_velocity_next = bit_velocity  + u1 * (pBest_bit - bit_pos) \
+            + u2 * (gBest_bit - bit_pos)
+        sigmoid_v_bit = (1 / (1 + np.exp(-bit_velocity_next)))
+        
+        if bit_velocity_next < self.velocity_min:
+            bit_velocity_next = self.velocity_min
+        elif bit_velocity_next > self.velocity_max:
+            bit_velocity_next = self.velocity_max
+            
+        bit_position_next = 0
+        r = np.random.uniform(0, 1)
         if r < sigmoid_v_bit:
-            bit_velocity = 1
-        return bit_velocity, sigmoid_v_bit
+            bit_position_next = 1
+        return bit_position_next, bit_velocity_next

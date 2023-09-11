@@ -33,10 +33,7 @@ if __name__ == "__main__":
                       variables_range=[(configs.range.min, configs.range.max)],
                       expand=configs.objective.expand, 
                       same_range=configs.range.variable_range, 
-                      n_chromosome=configs.num_of_chromosomes,
-                      inertia_weight_constant=configs.inertia_weight_constant,
-                      cognitive_coefficient=configs.cognitive_coefficient,
-                      social_coefficient=configs.social_coefficient)
+                      n_chromosome=configs.num_of_chromosomes)
     
     evo = Evolution(problem=problem, 
                     num_of_iterations=configs.num_of_iterations, 
@@ -50,6 +47,6 @@ if __name__ == "__main__":
                 num_of_variable=configs.num_of_gene,
                 range_min=configs.range.min, 
                 range_max=configs.range.max)
-    # plot.plot_scatter()
+    plot.plot(gBests=gBest)
     # plot.plot_contour(gBest=gBest, gBest_pos=gBest_pos,
     #                   pBest=pBest, pBest_pos=pBest_pos)
